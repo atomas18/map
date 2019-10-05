@@ -23,6 +23,7 @@
     <div id="mapid"></div>
 
     <script src="https://dl.dropboxusercontent.com/s/e69u0rgs9gow9o0/areal.js"></script>
+    <script src="https://dl.dropboxusercontent.com/s/lhatx5fpura757o/zugewiesen.js"></script>
 
     <script>         
 
@@ -36,11 +37,12 @@
             id: 'mapbox.satellite'
         }).addTo(map);
 
-        var data = getData_areal();
-        var geo = L.geoJSON(data, {});
-        map.fitBounds(geo.getBounds(), {padding: [5,5]});
-        geo.addTo(map);
+        var areal = L.geoJSON(getData_areal(), {});
+        map.fitBounds(areal.getBounds(), {padding: [5,5]});
+        areal.addTo(map);
         
+        var assigned = L.geoJSON(getData_zugewiesen(), {});
+        areal.addTo(assigned);
 </script>
 
 </body>
