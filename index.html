@@ -6,27 +6,23 @@
 <html class="no-js">
 <!--<![endif]-->
 
-<!-- https://blog.cloudboost.io/setting-up-windows-for-web-development-28483d245a82 -->
-
-<!-- https://emmet.io/ -->
-<!-- https://github.com/tmcw/awesome-geojson -->
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Title</title>
-    <meta name="description" content="">
+    <title>Map</title>
+    <meta name="description" content="interactive map demo">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
-    <link rel="stylesheet" type="text/css" href="mapstyle.css">
+    <style>
+        #mapid { height: 180px; }
+    </style>
 </head>
 
 <body>
     <div id="mapid"></div>
 
     <script src="https://dl.dropbox.com/s/0z6y4u49lo7s2ez/test.js"></script>
-
 
     <script>         
 
@@ -45,7 +41,6 @@
         map.fitBounds(geo.getBounds(), {padding: [20,20]});
         geo.addTo(map);
         
-
 </script>
 
 </body>
