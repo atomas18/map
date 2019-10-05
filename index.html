@@ -25,7 +25,8 @@
     <script src="https://dl.dropboxusercontent.com/s/e69u0rgs9gow9o0/areal.js"></script>
     <script src="https://dl.dropboxusercontent.com/s/lhatx5fpura757o/zugewiesen.js"></script>
 
-    <script>         
+    <script>  
+	
         var map = L.map('mapid');
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
             maxZoom: 18,
@@ -35,22 +36,43 @@
             id: 'mapbox.satellite'
         }).addTo(map);
 		
+
 		var arealStyle = {
-			"color": "#ffffff",
 			"opacity": 0.05
 		};
+		
+
 		
         var areal = L.geoJSON(getData_areal(), {style: arealStyle});
         map.fitBounds(areal.getBounds(), {padding: [5,5]});
         areal.addTo(map);
-        
-	    var aassignedStyle = {
+		
+		var takenStyle = {
 			"color": "#00ff00",
 			"opacity": 0.2
 		};
 		
-        var assigned = L.geoJSON(getData_zugewiesen(), {style: aassignedStyle});
-        assigned.addTo(map);
+		var untakenStyle = {
+			"color": "#ff0000",
+			"opacity": 0.2
+		};
+		
+	    L.geoJSON(getData_zugewiesen(), {
+		
+			style: function (feature) {
+				if(feature.properties && feature.properties.popupContent)
+					return takenStyle;
+				else
+					return untakenStyle;
+			},
+		
+			onEachFeature: function onEachFeature(feature, layer) {
+				if (feature.properties && feature.properties.popupContent) {
+					layer.bindPopup(feature.properties.popupContent);
+				}			
+			}
+		}).addTo(map);
+		
 </script>
 
 </body>
