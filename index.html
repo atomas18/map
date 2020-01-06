@@ -41,8 +41,6 @@
 			"opacity": 0.05
 		};
 		
-
-		
         var areal = L.geoJSON(getData_areal(), {style: arealStyle});
         map.fitBounds(areal.getBounds(), {padding: [5,5]});
         areal.addTo(map);
