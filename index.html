@@ -14,6 +14,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+    
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+
     <style>
         #mapid { height: 400px; }
     </style>
@@ -41,10 +44,25 @@
 		};
 		
         // areal: converted with http://www.zonums.com/online/coords/cotrans.php?module=11 based on mail from Dec 2019
-        var areal = L.geoJSON(getData_areal(), {style: arealStyle});
-        map.fitBounds(areal.getBounds(), {padding: [5,5]});
-        areal.addTo(map);
-		
+        var arealGeoJsonPolygon = getData_areal();
+        var arealLayer = L.geoJSON(arealGeoJsonPolygon, {style: arealStyle});
+        map.fitBounds(arealLayer.getBounds(), {padding: [5,5]});
+        arealLayer.addTo(map);
+        
+        // grid: work around turf.*grid weirdness
+        var arealGeoJsonPolygon_scaled = turf.transformScale(arealGeoJsonPolygon, 1.5);
+        var polyBBox = turf.bbox(arealGeoJsonPolygon_scaled);
+        var cellSide = 0.3;
+        var options = {units: 'miles'/*, mask: geoJsonPoly*/};
+        var grid = turf.squareGrid(polyBBox, cellSide, options);
+        console.log(grid);
+
+        for(var i = 0; i < grid["features"].length; i++)
+        {
+            var grid_i_intersected = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
+            L.geoJSON(grid_i_intersected).addTo(map);
+        }
+
 		var takenStyle = {
 			"color": "#00ff00",
 			"opacity": 0.2
@@ -54,7 +72,7 @@
 			"color": "#ff0000",
 			"opacity": 0.2
 		};
-		
+
 	    // L.geoJSON(getData_zugewiesen(), {
 		
 		// 	style: function (feature) {
