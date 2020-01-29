@@ -29,7 +29,31 @@
 
     <script>  
 	
+        // map styles
+        var gridStyle = {
+            color: 'black',
+            weight: 2,
+            fillColor: '#f03',
+            fillOpacity: 0.1,
+        };
+
+        // map styles
+        var gridStyle = {
+            color: 'black',
+            weight: 2,
+            fillColor: '#f03',
+            fillOpacity: 0.1,
+        };
+
+        // magic/input numbers
+        var cellSide = 3;
+        var enlargeScale = 1.5;
+        var gridType = "square";
+
         var map = L.map('mapid');
+
+        var gridLayerGroup = L.layerGroup([]);
+        gridLayerGroup.addTo(map);
 
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
             maxZoom: 18,
@@ -57,10 +81,12 @@
         var grid = turf.squareGrid(polyBBox, cellSide, options);
         console.log(grid);
 
+        gridLayerGroup.clearLayers();
+
         for(var i = 0; i < grid["features"].length; i++)
         {
             var grid_i_intersected = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
-            L.geoJSON(grid_i_intersected).addTo(map);
+            L.geoJSON(grid_i_intersected, gridStyle).addTo(gridLayerGroup);
         }
 
 		var takenStyle = {
