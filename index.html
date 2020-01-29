@@ -34,6 +34,7 @@
     Cell size [meters]: <input type="number" id="cellSize" value="750">
     <br>
     <input type="button" value="Create Grid" onclick="getInput();renderMap()">
+    <input type="button" value="Save Grid" onclick="saveGrid()">
 
     <script src="scripts/areal.js"></script>
 
@@ -59,6 +60,8 @@
         var cellSide = 750;
         var enlargeScale = 1.5;
         var gridType = "square";
+
+        var grid = null;
 
         var map = L.map('mapid');
 
@@ -105,8 +108,6 @@
             var polyBBox = turf.bbox(arealGeoJsonPolygon_scaled);
             var options = {units: 'meters'/*, mask: geoJsonPoly*/};
 
-            console.log(gridType);
-
             var gridFunction = turf.squareGrid;
             if(gridType == "square"){
                 gridFunction = turf.squareGrid;
@@ -119,16 +120,27 @@
             } 
             
             // Create a grid in the enlarged polyBBox
-            var grid = gridFunction(polyBBox, cellSide, options);
+            grid = gridFunction(polyBBox, cellSide, options);
 
             gridLayerGroup.clearLayers();
 
             // Intersect grid with the (original sized) GeoJson Polygon.
             for(var i = 0; i < grid["features"].length; i++)
             {
-                var grid_i_intersected = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
-                L.geoJSON(grid_i_intersected, gridStyle).addTo(gridLayerGroup);
+                grid["features"][i] = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
+                L.geoJSON(grid["features"][i], gridStyle).addTo(gridLayerGroup);
             }
+        }
+
+        function saveGrid(){
+            var textToSave = JSON.stringify(grid);
+
+            var hiddenElement = document.createElement('a');
+
+            hiddenElement.href = 'data:attachment/text,' + encodeURI(textToSave);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'grid-geojson.js';
+            hiddenElement.click();
         }
 
 		var takenStyle = {
