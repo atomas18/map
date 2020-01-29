@@ -105,12 +105,25 @@
             var polyBBox = turf.bbox(arealGeoJsonPolygon_scaled);
             var options = {units: 'meters'/*, mask: geoJsonPoly*/};
 
-            console.log(cellSide);
+            console.log(gridType);
 
-            var grid = turf.squareGrid(polyBBox, cellSide, options);
+            var gridFunction = turf.squareGrid;
+            if(gridType == "square"){
+                gridFunction = turf.squareGrid;
+            }
+            else if(gridType == "hex"){
+                gridFunction = turf.hexGrid;
+            }
+            else if(gridType == "triangle"){
+                gridFunction = turf.triangleGrid;
+            } 
+            
+            // Create a grid in the enlarged polyBBox
+            var grid = gridFunction(polyBBox, cellSide, options);
 
             gridLayerGroup.clearLayers();
 
+            // Intersect grid with the (original sized) GeoJson Polygon.
             for(var i = 0; i < grid["features"].length; i++)
             {
                 var grid_i_intersected = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
