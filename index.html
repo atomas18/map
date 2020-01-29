@@ -22,8 +22,18 @@
     </style>
 </head>
 
-<body>
+<body onload="renderMap()">
     <div id="mapid"></div>
+
+
+    <div id="grid_types">
+        <input type="radio" id="gt1" name="grid type" value="square" checked> Square
+        <input type="radio" id="gt2" name="grid type" value="hex"> Hex
+        <input type="radio" id="gt3" name="grid type" value="triangle"> Triangle
+    </div>
+    Cell size [meters]: <input type="number" id="cellSize" value="750">
+    <br>
+    <input type="button" value="Create Grid" onclick="getInput();renderMap()">
 
     <script src="scripts/areal.js"></script>
 
@@ -46,7 +56,7 @@
         };
 
         // magic/input numbers
-        var cellSide = 3;
+        var cellSide = 750;
         var enlargeScale = 1.5;
         var gridType = "square";
 
@@ -73,20 +83,39 @@
         map.fitBounds(arealLayer.getBounds(), {padding: [5,5]});
         arealLayer.addTo(map);
         
-        // grid: work around turf.*grid weirdness
-        var arealGeoJsonPolygon_scaled = turf.transformScale(arealGeoJsonPolygon, 1.5);
-        var polyBBox = turf.bbox(arealGeoJsonPolygon_scaled);
-        var cellSide = 0.3;
-        var options = {units: 'miles'/*, mask: geoJsonPoly*/};
-        var grid = turf.squareGrid(polyBBox, cellSide, options);
-        console.log(grid);
+        function getInput(){
+            cellSide = document.getElementById("cellSize").value;
+            
+            if(document.getElementById('gt1').checked){
+                gridType =  document.getElementById('gt1').value;
+            }
+            
+            if(document.getElementById('gt2').checked){
+                gridType =  document.getElementById('gt2').value;
+            }
+                
+            if(document.getElementById('gt3').checked){
+                gridType =  document.getElementById('gt3').value;
+            }
+        }
 
-        gridLayerGroup.clearLayers();
+        function renderMap(){
+            // grid: work around turf.*grid weirdness
+            var arealGeoJsonPolygon_scaled = turf.transformScale(arealGeoJsonPolygon, 1.5);
+            var polyBBox = turf.bbox(arealGeoJsonPolygon_scaled);
+            var options = {units: 'meters'/*, mask: geoJsonPoly*/};
 
-        for(var i = 0; i < grid["features"].length; i++)
-        {
-            var grid_i_intersected = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
-            L.geoJSON(grid_i_intersected, gridStyle).addTo(gridLayerGroup);
+            console.log(cellSide);
+
+            var grid = turf.squareGrid(polyBBox, cellSide, options);
+
+            gridLayerGroup.clearLayers();
+
+            for(var i = 0; i < grid["features"].length; i++)
+            {
+                var grid_i_intersected = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
+                L.geoJSON(grid_i_intersected, gridStyle).addTo(gridLayerGroup);
+            }
         }
 
 		var takenStyle = {
