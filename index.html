@@ -106,12 +106,16 @@
             // Intersect grid with the (original sized) GeoJson Polygon.
             for(var i = 0; i < grid["features"].length; i++)
             {
+                var cellNumber = i;
                 grid["features"][i] = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
-                L.geoJSON(grid["features"][i], gridStyle).addTo(gridLayerGroup);
+
+                var cellText = "cell " + cellNumber;
+                if(state.has(cellNumber))
+                  cellText += ": " + state.get(i);
+
+                L.geoJSON(grid["features"][i], gridStyle).addTo(gridLayerGroup).bindPopup(cellText);
             }
         }
-
-
 
 	    // L.geoJSON(getData_zugewiesen(), {
 		
