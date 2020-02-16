@@ -31,8 +31,15 @@
     <script>  
 	
         // map styles
-        var gridStyle = {
-            color: 'black',
+        var gridStyle_free = {
+            color: 'red',
+            weight: 1,
+            fillColor: '#f03',
+            fillOpacity: 0.1,
+        };
+
+        var gridStyle_taken = {
+            color: 'white',
             weight: 2,
             fillColor: '#f03',
             fillOpacity: 0.1,
@@ -41,16 +48,6 @@
         var arealStyle = {
 			"opacity": 0.5
         };
-
-        var takenStyle = {
-			"color": "#00ff00",
-			"opacity": 0.2
-		};
-		
-		var untakenStyle = {
-			"color": "#ff0000",
-			"opacity": 0.2
-		};
 		
         // magic numbers
         var cellSide     = 100;
@@ -109,9 +106,14 @@
                 var cellNumber = i;
                 grid["features"][i] = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
 
+                var gridStyle = gridStyle_free;
                 var cellText = "cell " + cellNumber;
                 if(state.has(cellNumber))
-                  cellText += ": " + state.get(i);
+                {
+                    cellText += ": " + state.get(i).name + ", " + state.get(i).comment;
+                    gridStyle = gridStyle_taken;
+                }
+                  
 
                 L.geoJSON(grid["features"][i], gridStyle).addTo(gridLayerGroup).bindPopup(cellText);
             }
