@@ -25,18 +25,8 @@
 <body onload="renderMap()">
     <div id="mapid"></div>
 
-
-    <div id="grid_types">
-        <input type="radio" id="gt1" name="grid type" value="square" checked> Square
-        <input type="radio" id="gt2" name="grid type" value="hex"> Hex
-        <input type="radio" id="gt3" name="grid type" value="triangle"> Triangle
-    </div>
-    Cell size [meters]: <input type="number" id="cellSize" value="750">
-    <br>
-    <input type="button" value="Create Grid" onclick="getInput();renderMap()">
-    <input type="button" value="Save Grid" onclick="saveGrid()">
-
     <script src="scripts/areal.js"></script>
+    <script src="scripts/state.js"></script>
 
     <script>  
 	
@@ -48,18 +38,24 @@
             fillOpacity: 0.1,
         };
 
-        // map styles
-        var gridStyle = {
-            color: 'black',
-            weight: 2,
-            fillColor: '#f03',
-            fillOpacity: 0.1,
+        var arealStyle = {
+			"opacity": 0.5
         };
 
-        // magic/input numbers
-        var cellSide = 750;
+        var takenStyle = {
+			"color": "#00ff00",
+			"opacity": 0.2
+		};
+		
+		var untakenStyle = {
+			"color": "#ff0000",
+			"opacity": 0.2
+		};
+		
+        // magic numbers
+        var cellSide     = 100;
         var enlargeScale = 1.5;
-        var gridType = "square";
+        var gridType     = "square";
 
         var grid = null;
 
@@ -76,31 +72,12 @@
             id: 'mapbox.satellite'
         }).addTo(map);
 
-		var arealStyle = {
-			"opacity": 0.5
-		};
 		
         // areal: converted with http://www.zonums.com/online/coords/cotrans.php?module=11 based on mail from Dec 2019
         var arealGeoJsonPolygon = getData_areal();
         var arealLayer = L.geoJSON(arealGeoJsonPolygon, {style: arealStyle});
         map.fitBounds(arealLayer.getBounds(), {padding: [5,5]});
         arealLayer.addTo(map);
-        
-        function getInput(){
-            cellSide = document.getElementById("cellSize").value;
-            
-            if(document.getElementById('gt1').checked){
-                gridType =  document.getElementById('gt1').value;
-            }
-            
-            if(document.getElementById('gt2').checked){
-                gridType =  document.getElementById('gt2').value;
-            }
-                
-            if(document.getElementById('gt3').checked){
-                gridType =  document.getElementById('gt3').value;
-            }
-        }
 
         function renderMap(){
             // grid: work around turf.*grid weirdness
@@ -124,6 +101,8 @@
 
             gridLayerGroup.clearLayers();
 
+            var state = getData_state();
+
             // Intersect grid with the (original sized) GeoJson Polygon.
             for(var i = 0; i < grid["features"].length; i++)
             {
@@ -132,26 +111,7 @@
             }
         }
 
-        function saveGrid(){
-            var textToSave = JSON.stringify(grid);
 
-            var hiddenElement = document.createElement('a');
-
-            hiddenElement.href = 'data:attachment/text,' + encodeURI(textToSave);
-            hiddenElement.target = '_blank';
-            hiddenElement.download = 'grid-geojson.js';
-            hiddenElement.click();
-        }
-
-		var takenStyle = {
-			"color": "#00ff00",
-			"opacity": 0.2
-		};
-		
-		var untakenStyle = {
-			"color": "#ff0000",
-			"opacity": 0.2
-		};
 
 	    // L.geoJSON(getData_zugewiesen(), {
 		
