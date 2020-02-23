@@ -36,17 +36,19 @@
 	
         // map styles
         var gridStyle_free = {
-            color: 'red',
-            weight: 1,
-            fillColor: '#f03',
-            fillOpacity: 0.1,
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '5',
+            fillOpacity: 0.3,
+            fillColor: 'white'
         };
 
         var gridStyle_taken = {
-            color: 'white',
+            color: 'orange',
             weight: 2,
             fillColor: '#f03',
-            fillOpacity: 0.1,
+            fillOpacity: 0.0,
         };
 
         var arealStyle = {
@@ -79,9 +81,9 @@
         
         // areal: converted with http://www.zonums.com/online/coords/cotrans.php?module=11 based on mail from Dec 2019
         var arealGeoJsonPolygon = getData_areal();
-        var arealLayer = L.geoJSON(arealGeoJsonPolygon, {style: arealStyle});
+        // var arealLayer = L.geoJSON(arealGeoJsonPolygon, {style: arealStyle});
         // map.fitBounds(arealLayer.getBounds());
-        arealLayer.addTo(map);
+        // arealLayer.addTo(map);
 
         function renderMap(){
             // grid: work around turf.*grid weirdness
@@ -114,7 +116,7 @@
                 grid["features"][i] = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
 
                 var gridStyle = gridStyle_free;
-                var cellText = "cell " + cellNumber;
+                var cellText = "Parzelle " + cellNumber;
                 if(state.has(cellNumber))
                 {
                     cellText += ": " + state.get(i).name + ", " + state.get(i).comment;
