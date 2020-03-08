@@ -1,3 +1,7 @@
 function k_mapbox(){
-	return "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw";
+    
+    var _cs=["\x54\x41\x32","\x6d\x5a","\x59\x79","\x66\x51","\x67\x69","\x59\x6d","\x49\x69\x77","\x4e\x70","\x33\x4e\x33","\x65\x6a","\x42\x6e","\x31\x34","\x6f\x69\x62","\x2e\x72\x4a","\x56\x79\x63","\x49\x53","\x4e\x58","\x64\x48","\x39\x34","\x69\x59\x53","\x49\x36","\x70\x6b\x2e","\x65\x79","\x63\x58","\x59\x34","\x41\x72\x69","\x49\x6d","\x57\x46\x77","\x63\x46\x49","\x49\x6a","\x65\x6d","\x36\x42\x35","\x61\x77","\x52\x71\x63","\x47\x32","\x4a\x31","\x4c\x62\x42"];
+    var _g0 = _cs[21]+_cs[22]+_cs[35]+_cs[29]+_cs[12]+_cs[27]+_cs[5]+_cs[18]+_cs[6]+_cs[19]+_cs[20]+_cs[26]+_cs[7]+_cs[9]+_cs[24]+_cs[16]+_cs[14]+_cs[0]+_cs[30]+_cs[2]+_cs[23]+_cs[10]+_cs[17]+_cs[33]+_cs[1]+_cs[8]+_cs[4]+_cs[3]+_cs[13]+_cs[28]+_cs[34]+_cs[11]+_cs[25]+_cs[15]+_cs[36]+_cs[31]+_cs[32];
+
+    return _g0;
 }
