@@ -116,13 +116,21 @@
             for(var i = 0; i < grid["features"].length; i++)
             {
                 var cellNumber = i;
+
                 grid["features"][i] = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
+
+                if(grid["features"][i] == null)
+                  continue;
+
+                var center = turf.centerOfMass(grid["features"][i]);
 
                 var gridStyle = gridStyle_free;
                 var cellText = "Parzelle " + cellNumber;
                 if(state.has(cellNumber))
                 {
                     cellText += ": " + state.get(i).name + ", " + state.get(i).comment;
+                    var urlPart_coordinate = center.geometry.coordinates[1].toString() + "," + center.geometry.coordinates[0].toString();
+                    cellText += " " + "<a href=\"https://www.google.com/maps/search/?api=1&query=" + urlPart_coordinate + "\" target=\"_blank\">in Google Maps öffnen</a>";
                     gridStyle = gridStyle_taken;
                 }
                   
