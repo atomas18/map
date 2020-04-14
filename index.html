@@ -130,7 +130,7 @@
                 {
                     cellText += ": " + state.get(i).name + ", " + state.get(i).comment;
                     var urlPart_coordinate = center.geometry.coordinates[1].toString() + "," + center.geometry.coordinates[0].toString();
-                    cellText += " " + "<a href=\"https://www.google.com/maps/search/?api=1&query=" + urlPart_coordinate + "\" target=\"_blank\">in Google Maps öffnen</a>";
+                    cellText += " " + "<a href=\"https://www.google.com/maps?q=" + urlPart_coordinate + "&t=k\" target=\"_blank\">öffnen in Google Maps</a>";
                     gridStyle = gridStyle_taken;
                 }
                   
