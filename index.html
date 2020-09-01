@@ -33,6 +33,7 @@
     <script src="scripts/k.js"></script>
     <script src="scripts/state.js"></script> <!-- getData_state() -->
     <script src="scripts/sponsors.js"></script> <!-- getData_sponsors() -->
+    <script src="scripts/grid_geojson.js"></script> <!-- grid_geojson() -->
 
     <script>  
 	
@@ -62,7 +63,7 @@
         var enlargeScale = 1.5;
         var gridType     = "square";
 
-        var grid = null;
+        var grid = grid_geojson();
 
         var arealCenter = [-6.1305464999999995, -61.880759];
         var map = L.map('mapid', {
@@ -85,29 +86,10 @@
         
         // areal: converted with http://www.zonums.com/online/coords/cotrans.php?module=11 based on mail from Dec 2019
         var arealGeoJsonPolygon = getData_areal();
-        // var arealLayer = L.geoJSON(arealGeoJsonPolygon, {style: arealStyle});
-        // map.fitBounds(arealLayer.getBounds());
-        // arealLayer.addTo(map);
 
         function renderMap(){
-            // grid: work around turf.*grid weirdness
-            var arealGeoJsonPolygon_scaled = turf.transformScale(arealGeoJsonPolygon, 1.5);
-            var polyBBox = turf.bbox(arealGeoJsonPolygon_scaled);
-            var options = {units: 'meters'/*, mask: geoJsonPoly*/};
 
-            var gridFunction = turf.squareGrid;
-            if(gridType == "square"){
-                gridFunction = turf.squareGrid;
-            }
-            else if(gridType == "hex"){
-                gridFunction = turf.hexGrid;
-            }
-            else if(gridType == "triangle"){
-                gridFunction = turf.triangleGrid;
-            } 
-            
-            // Create a grid in the enlarged polyBBox
-            grid = gridFunction(polyBBox, cellSide, options);
+            var options = {units: 'meters'/*, mask: geoJsonPoly*/};
 
             gridLayerGroup.clearLayers();
 
@@ -126,8 +108,6 @@
             for(var i = 0; i < grid["features"].length; i++)
             {
                 var cellNumber = i;
-
-                grid["features"][i] = turf.intersect(grid["features"][i], arealGeoJsonPolygon);
 
                 if(grid["features"][i] == null)
                   continue;
@@ -149,22 +129,6 @@
             }
         }
 
-	    // L.geoJSON(getData_zugewiesen(), {
-		
-		// 	style: function (feature) {
-		// 		if(feature.properties && feature.properties.popupContent)
-		// 			return takenStyle;
-		// 		else
-		// 			return untakenStyle;
-		// 	},
-		
-		// 	onEachFeature: function onEachFeature(feature, layer) {
-		// 		if (feature.properties && feature.properties.popupContent) {
-		// 			layer.bindPopup(feature.properties.popupContent);
-		// 		}			
-		// 	}
-		// }).addTo(map);
-		
 </script>
 
 </body>
