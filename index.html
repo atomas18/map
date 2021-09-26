@@ -107,10 +107,16 @@
             // Intersect grid with the (original sized) GeoJson Polygon.
             for(var i = 0; i < grid["features"].length; i++)
             {
-                var cellNumber = i;
-
                 if(grid["features"][i] == null)
                   continue;
+
+                if(!grid["features"][i].hasOwnProperty("properties"))
+                  continue;
+
+                if(!grid["features"][i]["properties"].hasOwnProperty("cellNumber"))
+                  continue;
+
+                var cellNumber = grid["features"][i]["properties"]["cellNumber"];
 
                 var center = turf.centerOfMass(grid["features"][i]);
 
@@ -118,7 +124,7 @@
                 var cellText = "Parzelle " + cellNumber;
                 if(state.has(cellNumber))
                 {
-                    cellText += ": " + state.get(i).name + ", " + state.get(i).comment;
+                    cellText += ": " + state.get(cellNumber).name + ", " + state.get(cellNumber).comment;
                     var urlPart_coordinate = center.geometry.coordinates[1].toString() + "," + center.geometry.coordinates[0].toString();
                     cellText += " " + "<a href=\"https://www.google.com/maps?q=" + urlPart_coordinate + "&t=k\" target=\"_blank\">öffnen in Google Maps</a>";
                     gridStyle = gridStyle_taken;
