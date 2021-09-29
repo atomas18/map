@@ -29,7 +29,6 @@
 <body onload="renderMap()">
     <div id="mapid"></div>
 
-    <script src="scripts/areal.js"></script>
     <script src="scripts/k.js"></script>
     <script src="scripts/state.js"></script> <!-- getData_state() -->
     <script src="scripts/sponsors.js"></script> <!-- getData_sponsors() -->
@@ -65,11 +64,17 @@
 
         var grid = grid_geojson();
 
-        var arealCenter = [-6.1305464999999995, -61.880759];
         var map = L.map('mapid', {
-            center: arealCenter,
-            zoom: 14
+            zoomSnap: 0.2,
         });
+
+        // from turf.bbox
+        map.fitBounds([
+            [-6.15582979879849, -61.905125],
+            [-6.11186738199996, -61.836746368]
+        ]);
+
+        map.setZoom(13.6);
 
         var gridLayerGroup = L.layerGroup([]);
         gridLayerGroup.addTo(map);
@@ -83,9 +88,6 @@
                 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
             id: 'mapbox.satellite'
         }).addTo(map);
-        
-        // areal: converted with http://www.zonums.com/online/coords/cotrans.php?module=11 based on mail from Dec 2019
-        var arealGeoJsonPolygon = getData_areal();
 
         function renderMap(){
 
@@ -104,7 +106,7 @@
                 state = getData_state();
             }
 
-            // Intersect grid with the (original sized) GeoJson Polygon.
+            // show grid
             for(var i = 0; i < grid["features"].length; i++)
             {
                 if(grid["features"][i] == null)
