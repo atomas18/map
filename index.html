@@ -89,6 +89,29 @@
             id: 'mapbox.satellite'
         }).addTo(map);
 
+        function rencerCells(cells, layerGroup, state)
+        {
+            for(var i = 0; i < cells.length; i++)
+            {
+                var cellNumber = cells[i]["properties"]["cellNumber"];
+
+                var center = turf.centerOfMass(cells[i]);
+
+                var gridStyle = gridStyle_free;
+                var cellText = "Parzelle " + cellNumber;
+                if(state.has(cellNumber))
+                {
+                    cellText += ": " + state.get(cellNumber).name + ", " + state.get(cellNumber).comment;
+                    var urlPart_coordinate = center.geometry.coordinates[1].toString() + "," + center.geometry.coordinates[0].toString();
+                    cellText += " " + "<a href=\"https://www.google.com/maps?q=" + urlPart_coordinate + "&t=k\" target=\"_blank\">öffnen in Google Maps</a>";
+                    gridStyle = gridStyle_taken;
+                }
+                  
+
+                L.geoJSON(cells[i], gridStyle).addTo(layerGroup).bindPopup(cellText);
+            }
+        }
+
         function renderMap(){
 
             var options = {units: 'meters'/*, mask: geoJsonPoly*/};
@@ -106,35 +129,17 @@
                 state = getData_state();
             }
 
-            // show grid
-            for(var i = 0; i < grid["features"].length; i++)
-            {
-                if(grid["features"][i] == null)
-                  continue;
+            // sanitize cells
+            let cells = grid["features"];
+            cells = cells.filter(element => element != null);
+            cells = cells.filter(element => element.hasOwnProperty("properties"));
+            cells = cells.filter(element => element["properties"].hasOwnProperty("cellNumber"));
 
-                if(!grid["features"][i].hasOwnProperty("properties"))
-                  continue;
+            const cells_vacant = cells.filter(element => !state.has(element["properties"]["cellNumber"]));
+            const cells_taken  = cells.filter(element =>  state.has(element["properties"]["cellNumber"]));
 
-                if(!grid["features"][i]["properties"].hasOwnProperty("cellNumber"))
-                  continue;
-
-                var cellNumber = grid["features"][i]["properties"]["cellNumber"];
-
-                var center = turf.centerOfMass(grid["features"][i]);
-
-                var gridStyle = gridStyle_free;
-                var cellText = "Parzelle " + cellNumber;
-                if(state.has(cellNumber))
-                {
-                    cellText += ": " + state.get(cellNumber).name + ", " + state.get(cellNumber).comment;
-                    var urlPart_coordinate = center.geometry.coordinates[1].toString() + "," + center.geometry.coordinates[0].toString();
-                    cellText += " " + "<a href=\"https://www.google.com/maps?q=" + urlPart_coordinate + "&t=k\" target=\"_blank\">öffnen in Google Maps</a>";
-                    gridStyle = gridStyle_taken;
-                }
-                  
-
-                L.geoJSON(grid["features"][i], gridStyle).addTo(gridLayerGroup).bindPopup(cellText);
-            }
+            rencerCells(cells_vacant, gridLayerGroup, state);
+            rencerCells(cells_taken,  gridLayerGroup, state);
         }
 
 </script>
